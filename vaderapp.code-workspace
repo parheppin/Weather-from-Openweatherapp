@@ -1,0 +1,37 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			".git": true
+		},
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "vscode.html-language-features",
+		"[javascript]": {
+			"editor.defaultFormatter": "vscode.typescript-language-features"
+		},
+		"[css]": {
+			"editor.defaultFormatter": "vscode.css-language-features"
+		},
+		"liveServer.settings.port": 5500,
+		"liveServer.settings.donotShowInfoMsg": true,
+		"html.format.wrapLineLength": 80,
+		"css.lint.unknownAtRules": "ignore"
+	},
+	"extensions": {
+		"recommendations": [
+			"ritwickdey.liveserver",
+			"dbaeumer.vscode-eslint",
+			"esbenp.prettier-vscode",
+			"formulahendry.auto-rename-tag",
+			"pranaygp.vscode-css-peek"
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": []
+	}
+}
