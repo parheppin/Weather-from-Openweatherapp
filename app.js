@@ -1,6 +1,6 @@
 // API-konfiguration
 // OBS! Du behöver en egen API-nyckel från https://openweathermap.org/api
-const API_KEY = 'API-NYKKEL';
+const API_KEY = 'NØKKEL';
 const API_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
