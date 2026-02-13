@@ -20,11 +20,23 @@ En enkel och snygg webbapplikation för att visa aktuellt väder i olika städer
 
 ### 2. Konfigurera projektet
 
-1. Öppna `app.js`
-2. Ersätt `'DIN_API_NYCKEL_HÄR'` med din riktiga API-nyckel:
+1. Kopiera `config.example.js` och döp den till `config.js`:
+   ```bash
+   copy config.example.js config.js
+   ```
+   (på Mac/Linux:
+   ```bash
+   cp config.example.js config.js
+   ```
+   )
+
+2. Öppna `config.js`
+3. Ersätt `'DIN_API_NYCKEL_HÄR'` med din riktiga API-nyckel:
    ```javascript
    const API_KEY = 'din-faktiska-nyckel-här';
    ```
+
+**Viktigt:** Filen `config.js` är redan i `.gitignore` och kommer inte att commitas till Git för att skydda din API-nyckel.
 
 ### 3. Kör applikationen
 
@@ -75,6 +87,26 @@ Här är några förslag på hur du kan utveckla appen vidare:
 - Vanilla JavaScript (ES6+)
 - OpenWeatherMap API
 - Leaflet.js (interaktiva kartor)
+
+## Projektstruktur
+
+```
+VIBE test/
+├── index.html          # Huvudfil
+├── app.js              # Applikationslogik
+├── style.css           # Styling
+├── config.js           # API-nyckel (skapas av dig, inte i Git)
+├── config.example.js   # Mall för config.js
+├── .gitignore          # Ignorerar känsliga filer
+└── README.md           # Dokumentation
+```
+
+## Säkerhet
+
+- API-nyckeln lagras i en separat `config.js`-fil
+- `config.js` är inkluderad i `.gitignore` för att förhindra att nyckeln commitas till versionshantering
+- Använd `config.example.js` som mall när du sätter upp projektet
+- **OBS:** För produktion bör du använda en backend-server för att dölja API-nyckeln
 
 ## Licens
 
