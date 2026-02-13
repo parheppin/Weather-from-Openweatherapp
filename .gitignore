@@ -1,11 +1,11 @@
-# API-nycklar och känslig information
+# API-nycklar och känslig information 
 config.js
 .env
 .env.local
 
 # Operativsystem
 .DS_Store
-Thumbs.db
+Thumbs.db 
 
 # IDE / Editor
 .vscode/

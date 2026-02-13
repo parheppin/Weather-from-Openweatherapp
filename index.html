@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Väderapp</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,7 +22,7 @@
             <div id="weather-info" class="weather-info hidden">
                 <div class="location">
                     <h2 id="city-name">-</h2>
-                    <p id="date">-</p>
+                    <p id="date">-</p> 
                 </div>
 
                 <div class="current-weather">
@@ -56,6 +57,16 @@
                 </div>
             </div>
 
+            <div id="map-container" class="map-container hidden">
+                <h3>🗺️ Plats</h3>
+                <div id="map"></div>
+            </div>
+
+            <div id="forecast-container" class="forecast-container hidden">
+                <h3>📅 Prognos</h3>
+                <div id="forecast-days" class="forecast-days"></div>
+            </div>
+
             <div id="error-msg" class="error hidden"></div>
         </main>
 
@@ -64,6 +75,7 @@
         </footer>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

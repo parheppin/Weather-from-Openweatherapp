@@ -1,14 +1,15 @@
 // API-konfiguration
 // OBS! Du behöver en egen API-nyckel från https://openweathermap.org/api
-const API_KEY = '54fc802d4f3d9b9a7fd7f7fd5b5f4afa';
+const API_KEY = 'API-NYKKEL';
 const API_URL = 'https://api.openweathermap.org/data/2.5/weather';
+const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
 // DOM-element
 const cityInput = document.getElementById('city-input');
 const searchBtn = document.getElementById('search-btn');
 const weatherInfo = document.getElementById('weather-info');
 const errorMsg = document.getElementById('error-msg');
-
+ 
 // Väderdata-element
 const cityName = document.getElementById('city-name');
 const date = document.getElementById('date');
@@ -19,6 +20,13 @@ const feelsLike = document.getElementById('feels-like');
 const humidity = document.getElementById('humidity');
 const wind = document.getElementById('wind');
 const pressure = document.getElementById('pressure');
+const mapContainer = document.getElementById('map-container');
+const forecastContainer = document.getElementById('forecast-container');
+const forecastDays = document.getElementById('forecast-days');
+
+// Karta
+let map = null;
+let marker = null;
 
 // Event listeners
 searchBtn.addEventListener('click', () => {
@@ -42,6 +50,7 @@ async function getWeatherData(city) {
     try {
         hideError();
         weatherInfo.classList.add('hidden');
+        forecastContainer.classList.add('hidden');
 
         const response = await fetch(
             `${API_URL}?q=${city}&appid=${API_KEY}&units=metric&lang=sv`
@@ -59,6 +68,9 @@ async function getWeatherData(city) {
 
         const data = await response.json();
         displayWeatherData(data);
+        
+        // Hämta också prognosdata
+        getForecastData(city);
     } catch (error) {
         showError(error.message);
     }
@@ -80,6 +92,9 @@ function displayWeatherData(data) {
     humidity.textContent = data.main.humidity;
     wind.textContent = data.wind.speed.toFixed(1);
     pressure.textContent = data.main.pressure;
+
+    // Uppdatera karta
+    updateMap(data.coord.lat, data.coord.lon, data.name);
 
     // Visa väderinformation
     weatherInfo.classList.remove('hidden');
@@ -108,6 +123,111 @@ function getCurrentDate() {
         minute: '2-digit'
     };
     return now.toLocaleDateString('sv-SE', options);
+}
+
+// Hämta prognosdata
+async function getForecastData(city) {
+    try {
+        const response = await fetch(
+            `${FORECAST_URL}?q=${city}&appid=${API_KEY}&units=metric&lang=sv`
+        );
+
+        if (!response.ok) {
+            throw new Error('Kunde inte hämta prognosdata');
+        }
+
+        const data = await response.json();
+        displayForecastData(data);
+    } catch (error) {
+        console.error('Fel vid hämtning av prognos:', error);
+    }
+}
+
+// Visa prognosdata
+function displayForecastData(data) {
+    forecastDays.innerHTML = '';
+    
+    // Gruppera prognosdata per dag (API ger data var 3:e timme)
+    const dailyData = {};
+    
+    data.list.forEach(item => {
+        const date = new Date(item.dt * 1000);
+        const dateKey = date.toLocaleDateString('sv-SE', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit' 
+        });
+        
+        if (!dailyData[dateKey]) {
+            dailyData[dateKey] = {
+                temps: [],
+                weather: item.weather[0],
+                date: date
+            };
+        }
+        
+        dailyData[dateKey].temps.push(item.main.temp);
+    });
+    
+    // Skapa kort för varje dag (max 10 dagar, men API ger endast ~5 dagar)
+    const days = Object.values(dailyData).slice(0, 10);
+    
+    days.forEach(day => {
+        const maxTemp = Math.round(Math.max(...day.temps));
+        const minTemp = Math.round(Math.min(...day.temps));
+        
+        const dayCard = document.createElement('div');
+        dayCard.className = 'forecast-day';
+        
+        const dayName = day.date.toLocaleDateString('sv-SE', { weekday: 'short' });
+        const dayDate = day.date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
+        
+        dayCard.innerHTML = `
+            <div class="forecast-date">
+                <div class="day-name">${dayName}</div>
+                <div class="day-date">${dayDate}</div>
+            </div>
+            <img src="https://openweathermap.org/img/wn/${day.weather.icon}.png" alt="${day.weather.description}" />
+            <div class="forecast-temps">
+                <span class="temp-max">${maxTemp}°</span>
+                <span class="temp-min">${minTemp}°</span>
+            </div>
+            <div class="forecast-desc">${day.weather.description}</div>
+        `;
+        
+        forecastDays.appendChild(dayCard);
+    });
+    
+    forecastContainer.classList.remove('hidden');
+}
+
+// Initialisera och uppdatera kartan
+function updateMap(lat, lon, cityName) {
+    mapContainer.classList.remove('hidden');
+    
+    // Initialisera kartan om den inte finns
+    if (!map) {
+        map = L.map('map').setView([lat, lon], 10);
+        
+        // Lägg till kartlager från OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+    } else {
+        // Uppdatera vyn om kartan redan finns
+        map.setView([lat, lon], 10);
+    }
+    
+    // Ta bort gammal markör om den finns
+    if (marker) {
+        map.removeLayer(marker);
+    }
+    
+    // Lägg till ny markör
+    marker = L.marker([lat, lon]).addTo(map)
+        .bindPopup(`<b>${cityName}</b>`)
+        .openPopup();
 }
 
 // Ladda standardstad vid start (valfritt)
