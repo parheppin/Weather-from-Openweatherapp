@@ -23,3 +23,7 @@ yarn-error.log*
 # Byggfiler (om du senare lägger till build-process)
 dist/
 build/
+
+# Övrigt
+vaderapp.code-workspace
+
