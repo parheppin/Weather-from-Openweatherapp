@@ -26,7 +26,7 @@
 			"ritwickdey.liveserver",
 			"dbaeumer.vscode-eslint",
 			"esbenp.prettier-vscode",
-			"formulahendry.auto-rename-tag",
+			"formulahendry.auto-rename-tag", 
 			"pranaygp.vscode-css-peek"
 		]
 	},
